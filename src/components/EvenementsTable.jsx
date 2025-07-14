@@ -25,7 +25,7 @@ const filterByDate = () => {
   if (!searchDate) return;
 
   axios
-    .get("http://localhost:8080/api/evenements/search", {
+    .get("http://localhost:8081/api/evenements/search", {
       params: {
         date: searchDate,
       },
@@ -40,7 +40,7 @@ const filterByDate = () => {
 
 const searchEvents = () => {
   axios
-    .get("http://localhost:8080/api/evenements/search", {
+    .get("http://localhost:8081/api/evenements/search", {
       params: {
         keyword: keyword.trim() || null,
         date: searchDate || null,
@@ -78,7 +78,7 @@ const handleDelete = (id) => {
   }).then((result) => {
     if (result.isConfirmed) {
       axios
-        .delete(`http://localhost:8080/api/evenements/${id}`)
+        .delete(`http://localhost:8081/api/evenements/${id}`)
         .then(() => {
           setEvenements((prev) => prev.filter((e) => e.id !== id));
 
@@ -104,7 +104,7 @@ const handleDelete = (id) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/evenements")
+      .get("http://localhost:8081/api/evenements")
       .then((res) => setEvenements(res.data))
       .catch((err) => console.error("Erreur lors du chargement des événements :", err));
 
@@ -295,10 +295,10 @@ const handleDelete = (id) => {
 
         <div className="content">
           <div className="page-header">
-            <h1 className="page-title">Evenements</h1>
+            <h1 className="page-title">Gestion des événements</h1>
             <div className="page-actions">
               <button className="btn" onClick={() => setShowAddModal(true)}>
-                <i className="fas fa-plus"></i> Nouvel Evenement
+                <i className="fas fa-plus"></i> Nouvel Evénement
               </button>
             </div>
           </div>
@@ -306,7 +306,7 @@ const handleDelete = (id) => {
           {/* Table dynamique */}
           <div className="card">
             <div className="card-header">
-              <h2 className="card-title">Evenement en cours</h2>
+              <h2 className="card-title">Evénements en cours</h2>
               <div className="card-actions">
                 <button className="btn">
                   <i className="fas fa-list"></i> Liste
@@ -396,7 +396,7 @@ const handleDelete = (id) => {
         onSubmit={(e) => {
           e.preventDefault();
           axios
-            .put(`http://localhost:8080/api/evenements/update/${selectedEvent.id}`, selectedEvent)
+            .put(`http://localhost:8081/api/evenements/update/${selectedEvent.id}`, selectedEvent)
             .then(() => {
               setEvenements((prev) =>
                 prev.map((ev) => (ev.id === selectedEvent.id ? selectedEvent : ev))
@@ -463,7 +463,7 @@ const handleDelete = (id) => {
         onSubmit={(e) => {
           e.preventDefault();
           axios
-            .post("http://localhost:8080/api/evenements", newEvent)
+            .post("http://localhost:8081/api/evenements", newEvent)
             .then((res) => {
               setEvenements((prev) => [...prev, res.data]);
               setShowAddModal(false);
