@@ -1,0 +1,174 @@
+
+
+        .global {
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('../assets/Images/bg-signup.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            width: 163.4%;
+        }
+
+        .signup-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        /* Section Illustration */
+        .illustration-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            background: rgba(110, 142, 251, 0.3);
+        }
+
+        .illustration-img {
+            width: 80%;
+            max-width: 250px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        .illustration-text h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .illustration-text p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Section Formulaire */
+        .login-section {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .login-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .login-header h2 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .bi-person-plus {
+            margin-right: 8px;
+        }
+
+        /* Styles du formulaire */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: #036227;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .signup-text {
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .signup-text a {
+            color: white;
+            font-weight: 500;
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .signup-wrapper {
+                flex-direction: column;
+            }
+            
+            .illustration-section, 
+            .login-section {
+                padding: 30px;
+            }
+            
+            .illustration-img {
+                max-width: 200px;
+            }
+        }
