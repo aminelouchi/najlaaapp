@@ -15,6 +15,12 @@ const EvenementsTable = () => {
   setShowModal(true);
 };
 
+const [selectedFile, setSelectedFile] = useState(null);
+
+
+const [isGridView, setIsGridView] = useState(false);
+
+
 const [suggestions, setSuggestions] = useState([]);
 
 const [keyword, setKeyword] = useState("");
@@ -37,7 +43,6 @@ const filterByDate = () => {
     });
 };
 
-
 const searchEvents = () => {
   axios
     .get("http://localhost:8081/api/evenements/search", {
@@ -52,7 +57,6 @@ const searchEvents = () => {
       Swal.fire("Erreur", "Impossible de rechercher les événements.", "error");
     });
 };
-
 
 const [showAddModal, setShowAddModal] = useState(false);
 const [newEvent, setNewEvent] = useState({
@@ -102,40 +106,67 @@ const handleDelete = (id) => {
   });
 };
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:8081/api/evenements")
-      .then((res) => setEvenements(res.data))
-      .catch((err) => console.error("Erreur lors du chargement des événements :", err));
+ useEffect(() => {
+  // Récupérer tous les événements
+  axios
+    .get("http://localhost:8080/api/evenements")
+    .then(async (res) => {
+      const events = res.data;
 
-    const toggleSidebar = () => {
-      document.querySelector(".sidebar")?.classList.toggle("active");
-    };
-
-    const activateMenuItem = (e) => {
-      document.querySelectorAll(".menu-link").forEach((l) => l.classList.remove("active"));
-      e.currentTarget.classList.add("active");
-    };
-
-    const showNotifications = () => alert("Notifications dropdown would appear here");
-    const showProfile = () => alert("User profile dropdown would appear here");
-
-    document.getElementById("toggleSidebar")?.addEventListener("click", toggleSidebar);
-    document.querySelectorAll(".menu-link").forEach((link) =>
-      link.addEventListener("click", activateMenuItem)
-    );
-    document.querySelector(".header-notification")?.addEventListener("click", showNotifications);
-    document.querySelector(".user-profile")?.addEventListener("click", showProfile);
-
-    return () => {
-      document.getElementById("toggleSidebar")?.removeEventListener("click", toggleSidebar);
-      document.querySelectorAll(".menu-link").forEach((link) =>
-        link.removeEventListener("click", activateMenuItem)
+      // Charger les images pour chaque événement
+      const eventsWithImages = await Promise.all(
+        events.map(async (event) => {
+          try {
+            const mediaRes = await axios.get(
+              `http://localhost:8080/api/medias/evenement/${event.id}`
+            );
+            const media = mediaRes.data[0]; // prend la première image
+            return {
+              ...event,
+              imageUrl: media ? `http://localhost:8080/api/medias/fichiers/${media.nomFichier}` : null,
+            };
+          } catch (err) {
+            console.error("Erreur chargement média pour l'événement", event.id, err);
+            return { ...event, imageUrl: null };
+          }
+        })
       );
-      document.querySelector(".header-notification")?.removeEventListener("click", showNotifications);
-      document.querySelector(".user-profile")?.removeEventListener("click", showProfile);
-    };
-  }, []);
+
+      setEvenements(eventsWithImages);
+    })
+    .catch((err) => console.error("Erreur lors du chargement des événements :", err));
+
+
+  // Sidebar & menu
+  const toggleSidebar = () => {
+    document.querySelector(".sidebar")?.classList.toggle("active");
+  };
+
+  const activateMenuItem = (e) => {
+    document.querySelectorAll(".menu-link").forEach((l) => l.classList.remove("active"));
+    e.currentTarget.classList.add("active");
+  };
+
+  const showNotifications = () => alert("Notifications dropdown would appear here");
+  const showProfile = () => alert("User profile dropdown would appear here");
+
+  document.getElementById("toggleSidebar")?.addEventListener("click", toggleSidebar);
+  document.querySelectorAll(".menu-link").forEach((link) =>
+    link.addEventListener("click", activateMenuItem)
+  );
+  document.querySelector(".header-notification")?.addEventListener("click", showNotifications);
+  document.querySelector(".user-profile")?.addEventListener("click", showProfile);
+
+  return () => {
+    document.getElementById("toggleSidebar")?.removeEventListener("click", toggleSidebar);
+    document.querySelectorAll(".menu-link").forEach((link) =>
+      link.removeEventListener("click", activateMenuItem)
+    );
+    document.querySelector(".header-notification")?.removeEventListener("click", showNotifications);
+    document.querySelector(".user-profile")?.removeEventListener("click", showProfile);
+  };
+}, []);
+
 
   // ... return JSX ici
 
@@ -156,25 +187,26 @@ const handleDelete = (id) => {
           <h3 className="menu-title">Menu Principal</h3>
           <ul className="menu-items">
             <li className="menu-item">
-              <a href="#" className="menu-link">
-                <i className="fas fa-tachometer-alt"></i>
-                <span>Tableau de bord</span>
-              </a>
+              <a href="/stats" className="menu-link">
+            <i className="fas fa-tachometer-alt"></i>
+            <span>Tableau de bord</span>
+          </a>
             </li>
             <li className="menu-item">
-              <a href="#" className="menu-link active">
+              <a href="/event" className="menu-link active">
                 <i className="fas fa-users"></i>
-                <span>Evenements</span>
+                <span>Événements</span>
               </a>
             </li>
             <li className="menu-item">
-              <a href="#" className="menu-link">
+              <a href="/delegations" className="menu-link">
                 <i className="fas fa-door-open"></i>
-                <span>Delegations</span>
+                <span>Délégations</span>
               </a>
             </li>
+
             <li className="menu-item">
-              <a href="#" className="menu-link">
+              <a href="/galerie" className="menu-link">
                 <i className="fas fa-box"></i>
                 <span>Galerie Medias</span>
               </a>
@@ -183,15 +215,9 @@ const handleDelete = (id) => {
 
           <ul className="menu-items">
             <li className="menu-item">
-              <a href="#" className="menu-link">
-                <i className="fas fa-chart-line"></i>
-                <span>Statistiques</span>
-              </a>
-            </li>
-            <li className="menu-item">
-              <a href="#" className="menu-link">
+              <a href="/" className="menu-link">
                 <i className="fas fa-file-alt"></i>
-                <span>Rapports</span>
+                <span>Se déconnecter</span>
               </a>
             </li>
           </ul>
@@ -276,10 +302,7 @@ const handleDelete = (id) => {
           </div>
 
           <div className="header-right">
-            <div className="header-notification">
-              <i className="fas fa-bell"></i>
-              <span className="notification-badge">3</span>
-            </div>
+            
 
             <div className="user-profile">
               <img
@@ -295,25 +318,28 @@ const handleDelete = (id) => {
 
         <div className="content">
           <div className="page-header">
-            <h1 className="page-title">Gestion des événements</h1>
+            <h1 className="page-title">Événements</h1>
             <div className="page-actions">
               <button className="btn" onClick={() => setShowAddModal(true)}>
-                <i className="fas fa-plus"></i> Nouvel Evénement
+                <i className="fas fa-plus"></i> Nouvel Événement
               </button>
             </div>
           </div>
 
           {/* Table dynamique */}
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Evénements en cours</h2>
-              <div className="card-actions">
-                <button className="btn">
+          <div className="cardevent">
+            <div className="cardevent-header">
+              <h2 className="cardevent-title">Événements en cours</h2>
+              <div className="cardevent-actions">
+                <button className="btn" onClick={() => setIsGridView(false)}>
+
                   <i className="fas fa-list"></i> Liste
                 </button>
-                <button className="btn">
+
+                <button className="btn" onClick={() => setIsGridView(true)}>
                   <i className="fas fa-th-large"></i> Grid
                 </button>
+
                 <button
                   className="btn"
                   onClick={() => setShowDatePicker((prev) => !prev)}
@@ -341,51 +367,69 @@ const handleDelete = (id) => {
             </div>
 
             <div className="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Titre</th>
-                    <th>Description</th>
-                    <th>Date</th>
-                    <th>Lieu</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {evenements.map((event) => (
-                    <tr key={event.id}>
-                      <td>#{event.id}</td>
-                      <td>{event.titre}</td>
-                      <td>{event.description}</td>
-                      <td>{new Date(event.date).toLocaleDateString()}</td>
-                      <td>{event.lieu}</td>
-                      <td>
-                        <span className="status confirmed">Confirmée</span>
-                      </td>
-                      <td>
-                        <button
-                          className="action-btn"
-                          title="Modifier"
-                          onClick={() => handleEdit(event)}
-                        >
-                          <i className="fas fa-edit"></i>
-                        </button>
+  {isGridView ? (
+    <div className="grid-view">
+  {evenements.map((event) => (
+    <div key={event.id} className="event-card">
+      {/* Affichage image si présente */}
+      {event.imageUrl && (
+        <img
+          src={event.imageUrl}
+          alt={event.titre}
+          style={{ display: "inline", width: "100%", height: "300px", objectFit: "cover", borderRadius: "8px" }}
+        />
+      )}
 
-                        <button
-                          className="action-btn"
-                          title="Annuler"
-                          onClick={() => handleDelete(event.id)}
-                        >
-                          <i className="fas fa-times"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      <h3>{event.titre}</h3>
+      <p>{event.description}</p>
+      <p><strong>Date :</strong> {new Date(event.date).toLocaleDateString()}</p>
+      <p><strong>Lieu :</strong> {event.lieu}</p>
+      <div className="actions">
+        <button className="action-btn" title="Modifier" onClick={() => handleEdit(event)}>
+          <i className="fas fa-edit"></i>
+        </button>
+        <button className="action-btn" title="Annuler" onClick={() => handleDelete(event.id)}>
+          <i className="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+  ) : (
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Titre</th>
+          <th>Description</th>
+          <th>Date</th>
+          <th>Lieu</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {evenements.map((event) => (
+          <tr key={event.id}>
+            <td>#{event.id}</td>
+            <td>{event.titre}</td>
+            <td>{event.description}</td>
+            <td>{new Date(event.date).toLocaleDateString()}</td>
+            <td>{event.lieu}</td>
+            <td>
+              <button className="action-btn" title="Modifier" onClick={() => handleEdit(event)}>
+                <i className="fas fa-edit"></i>
+              </button>
+              <button className="action-btn" title="Annuler" onClick={() => handleDelete(event.id)}>
+                <i className="fas fa-times"></i>
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</div>
+
           </div>
         </div>
 {showModal && selectedEvent && (
@@ -394,26 +438,55 @@ const handleDelete = (id) => {
       <h2>Modifier l'événement</h2>
       <form
         onSubmit={(e) => {
-          e.preventDefault();
-          axios
-            .put(`http://localhost:8081/api/evenements/update/${selectedEvent.id}`, selectedEvent)
-            .then(() => {
-              setEvenements((prev) =>
-                prev.map((ev) => (ev.id === selectedEvent.id ? selectedEvent : ev))
-              );
-              setShowModal(false);
-              Swal.fire({
-                title: "Modifié avec succès !",
-                icon: "success",
-                timer: 2000,
-                showConfirmButton: false,
-              });
-            })
-            .catch((err) => {
-              console.error("Erreur lors de la modification :", err);
-              Swal.fire("Erreur", "Impossible de modifier l'événement.", "error");
+  e.preventDefault();
+
+  // Étape 1 : Mise à jour des infos de l’événement
+  axios
+    .put(`http://localhost:8080/api/evenements/update/${selectedEvent.id}`, selectedEvent)
+    .then(() => {
+      // Étape 2 : Upload image si sélectionnée
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        axios
+          .post(`http://localhost:8080/api/medias/upload/${selectedEvent.id}`, formData)
+          .then(() => {
+            // Met à jour l’état avec image (rechargement nécessaire pour voir le changement)
+            setEvenements((prev) =>
+              prev.map((ev) => (ev.id === selectedEvent.id ? { ...selectedEvent } : ev))
+            );
+            setShowModal(false);
+            Swal.fire({
+              title: "Modifié avec image !",
+              icon: "success",
+              timer: 2000,
+              showConfirmButton: false,
             });
-        }}
+          })
+          .catch((err) => {
+            console.error("Erreur lors de l'upload d'image :", err);
+            Swal.fire("Erreur", "Événement modifié mais image non envoyée.", "warning");
+          });
+      } else {
+        setEvenements((prev) =>
+          prev.map((ev) => (ev.id === selectedEvent.id ? { ...selectedEvent } : ev))
+        );
+        setShowModal(false);
+        Swal.fire({
+          title: "Modifié avec succès !",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+    })
+    .catch((err) => {
+      console.error("Erreur lors de la modification :", err);
+      Swal.fire("Erreur", "Impossible de modifier l'événement.", "error");
+    });
+}}
+
       >
         <label>Titre</label>
         <input
@@ -427,6 +500,13 @@ const handleDelete = (id) => {
           value={selectedEvent.description}
           onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
         ></textarea>
+
+        <label>Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setSelectedFile(e.target.files[0])}
+        />
 
         <label>Date</label>
         <input
@@ -461,25 +541,51 @@ const handleDelete = (id) => {
       <h2>Ajouter un événement</h2>
       <form
         onSubmit={(e) => {
-          e.preventDefault();
-          axios
-            .post("http://localhost:8081/api/evenements", newEvent)
-            .then((res) => {
-              setEvenements((prev) => [...prev, res.data]);
-              setShowAddModal(false);
-              setNewEvent({ titre: "", description: "", date: "", lieu: "" });
-              Swal.fire({
-                title: "Ajouté avec succès !",
-                icon: "success",
-                timer: 2000,
-                showConfirmButton: false,
-              });
-            })
-            .catch((err) => {
-              console.error("Erreur lors de l'ajout :", err);
-              Swal.fire("Erreur", "Impossible d'ajouter l'événement.", "error");
-            });
-        }}
+  e.preventDefault();
+
+  // Étape 1 : Créer l’événement
+  axios
+    .post("http://localhost:8080/api/evenements", newEvent)
+    .then((res) => {
+      const createdEvent = res.data;
+
+      // Étape 2 : Si une image est sélectionnée, uploader le fichier
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        axios
+          .post(`http://localhost:8080/api/medias/upload/${createdEvent.id}`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then(() => {
+            console.log("Image envoyée avec succès");
+          })
+          .catch((err) => {
+            console.error("Erreur lors de l’envoi de l’image :", err);
+          });
+      }
+
+      // Mise à jour de l’interface
+      setEvenements((prev) => [...prev, createdEvent]);
+      setShowAddModal(false);
+      setNewEvent({ titre: "", description: "", date: "", lieu: "" });
+      setSelectedFile(null);
+
+      Swal.fire({
+        title: "Ajouté avec succès !",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    })
+    .catch((err) => {
+      console.error("Erreur lors de l’ajout :", err);
+      Swal.fire("Erreur", "Impossible d’ajouter l’événement.", "error");
+    });
+}}
       >
         <label>Titre</label>
         <input
@@ -493,6 +599,14 @@ const handleDelete = (id) => {
           value={newEvent.description}
           onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
         ></textarea>
+
+       <label>Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setSelectedFile(e.target.files[0])}
+        />
+
 
         <label>Date</label>
         <input
