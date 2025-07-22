@@ -31,7 +31,7 @@ const filterByDate = () => {
   if (!searchDate) return;
 
   axios
-    .get("http://localhost:8080/api/evenements/search", {
+    .get("http://localhost:8081/api/evenements/search", {
       params: {
         date: searchDate,
       },
@@ -45,7 +45,7 @@ const filterByDate = () => {
 
 const searchEvents = () => {
   axios
-    .get("http://localhost:8080/api/evenements/search", {
+    .get("http://localhost:8081/api/evenements/search", {
       params: {
         keyword: keyword.trim() || null,
         date: searchDate || null,
@@ -82,7 +82,7 @@ const handleDelete = (id) => {
   }).then((result) => {
     if (result.isConfirmed) {
       axios
-        .delete(`http://localhost:8080/api/evenements/${id}`)
+        .delete(`http://localhost:8081/api/evenements/${id}`)
         .then(() => {
           setEvenements((prev) => prev.filter((e) => e.id !== id));
 
@@ -135,6 +135,7 @@ const handleDelete = (id) => {
       setEvenements(eventsWithImages);
     })
     .catch((err) => console.error("Erreur lors du chargement des événements :", err));
+
 
   // Sidebar & menu
   const toggleSidebar = () => {
@@ -331,6 +332,7 @@ const handleDelete = (id) => {
               <h2 className="cardevent-title">Événements en cours</h2>
               <div className="cardevent-actions">
                 <button className="btn" onClick={() => setIsGridView(false)}>
+
                   <i className="fas fa-list"></i> Liste
                 </button>
 
@@ -584,7 +586,6 @@ const handleDelete = (id) => {
       Swal.fire("Erreur", "Impossible d’ajouter l’événement.", "error");
     });
 }}
-
       >
         <label>Titre</label>
         <input

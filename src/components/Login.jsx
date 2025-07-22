@@ -29,6 +29,7 @@ export default function Login() {
         window.location.href = "/event";
       } else if (type_user === "CLIENT") {
         window.location.href = "/dashclient";
+
       }
     }
   } catch (error) {

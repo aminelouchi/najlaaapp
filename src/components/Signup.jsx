@@ -31,7 +31,7 @@ export default function Signup() {
   }
 
   try {
-    const response = await axios.post('http://localhost:8080/api/personne/save', {
+    const response = await axios.post('http://localhost:8081/api/personne/save', {
       nom: formData.username,
       email: formData.email, // <- si tu as ajouté le champ email
       motDePasse: formData.password1
