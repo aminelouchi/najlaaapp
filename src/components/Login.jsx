@@ -15,19 +15,27 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const res = await axios.post("http://localhost:8080/api/personne/login", formData);
-      if (res.status === 200) {
-        Swal.fire("Succès", res.data, "success");
-        // Redirection ici si nécessaire, ex :
-        window.location.href = "/";
+  try {
+    const res = await axios.post("http://localhost:8080/api/personne/login", formData);
+    if (res.status === 200) {
+      const { message, type_user } = res.data;
+
+      Swal.fire("Succès", message, "success");
+
+      // Redirection en fonction du rôle
+      if (type_user === "ADMIN") {
+        window.location.href = "/event";
+      } else if (type_user === "CLIENT") {
+        window.location.href = "/dashclient";
       }
-    } catch (error) {
-      Swal.fire("Erreur", error.response?.data || "Erreur de connexion", "error");
     }
-  };
+  } catch (error) {
+    Swal.fire("Erreur", error.response?.data || "Erreur de connexion", "error");
+  }
+};
+
 
   return (
     <div className="general">

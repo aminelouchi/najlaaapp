@@ -1,6 +1,6 @@
 :root {
-    --primary: #4361ee;
-    --secondary: #3a0ca3;
+    --primary: #60006e;
+    --secondary: #9e0ca3;
     --accent: #f72585;
     --light: #f8f9fa;
     --dark: #212529;
@@ -20,6 +20,7 @@ body {
     color: var(--dark);
     display: flex;
     min-height: 100vh;
+    min-width: 1100px;
 }
 
 /* Sidebar */
@@ -121,10 +122,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
+    padding: 0 3rem;
     position: sticky;
     top: 0;
     z-index: 90;
+    margin-left: 6%;
 }
 
 .header-left {
@@ -148,6 +150,7 @@ body {
 
 .header-search {
     position: relative;
+    margin-right: 27rem;
 }
 
 .header-search input {
@@ -305,7 +308,7 @@ body {
 }
 
 /* Table */
-.card {
+.cardevent {
     background: white;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
@@ -313,25 +316,25 @@ body {
     margin-bottom: 2rem;
 }
 
-.card-header {
+.cardevent-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
 }
 
-.card-title {
+.cardevent-title {
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--dark);
 }
 
-.card-actions {
+.cardevent-actions {
     display: flex;
     gap: 0.5rem;
 }
 
-.card-actions .btn {
+.cardevent-actions .btn {
     padding: 0.5rem 0.8rem;
     background: rgba(67, 97, 238, 0.1);
     color: var(--primary);
@@ -341,7 +344,7 @@ body {
     transition: all 0.3s;
 }
 
-.card-actions .btn:hover {
+.cardevent-actions .btn:hover {
     background: rgba(67, 97, 238, 0.2);
 }
 
@@ -562,4 +565,29 @@ tr:hover td {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+
+
+
+.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  
+}
+
+.event-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.event-card .actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }

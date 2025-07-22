@@ -37,7 +37,7 @@ export default function Signup() {
       motDePasse: formData.password1
     });
     // Redirection ici si nécessaire, ex :
-        window.location.href = "/login";
+        window.location.href = "/";
 
     Swal.fire({
       icon: 'success',
@@ -141,7 +141,7 @@ export default function Signup() {
             </button>
 
             <div className="signup-text">
-              Déjà inscrit ? <a href="/login">Connectez-vous ici</a>
+              Déjà inscrit ? <a href="/">Connectez-vous ici</a>
             </div>
           </form>
         </div>
